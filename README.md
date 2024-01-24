@@ -7,6 +7,6 @@ Use Tailwind CSS classes as props in React.
   <Box pl="72px" py={2}>
     This is a box
   </Box>
-  <NotBox py="120px">What</NotBox>
+  <NotBox py={2}>What</NotBox>
 </>
 ```
