@@ -1,22 +1,5 @@
 import type { Config } from 'tailwindcss'
-
-const tags = [
-  'px',
-  'py',
-  'p',
-  'pr',
-  'pl',
-  'pt',
-  'pb',
-  'm',
-  'mr',
-  'ml',
-  'mt',
-  'mb',
-].join('|')
-const pattern = `(?<prop>${tags})=((\{|")(?<number>\\d+)(\}|")|(\{|")(?<string>\\[?\\w+\\]?)(\}|"))`
-const regexAll = new RegExp(pattern, 'g')
-const regex = new RegExp(pattern)
+import { extractProps } from './src/lib/extractProps'
 
 const config: Config = {
   content: {
@@ -25,28 +8,7 @@ const config: Config = {
       './src/components/**/*.{js,ts,jsx,tsx,mdx}',
       './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     ],
-    extract: (content) => {
-      let classNames = ''
-      const matches = content.match(regexAll)
-
-      matches?.forEach((match) => {
-        const values = match.match(regex)
-
-        if (values?.groups?.prop && values?.groups.number) {
-          classNames += `${values.groups?.prop}-${values.groups?.number} `
-        }
-
-        if (values?.groups?.prop && values?.groups.string) {
-          classNames += `${values.groups?.prop}-[${values.groups?.string}] `
-        }
-      })
-
-      const defaultMatches = content.match(/[^<>"'`\s]*[^<>"'`\s:]/g)
-      console.log(classNames)
-      const customMatches = classNames.match(/[^<>"'`\s]*[^<>"'`\s:]/g)
-
-      return [...(defaultMatches || []), ...(customMatches || [])]
-    },
+    extract: extractProps,
   },
   theme: {
     extend: {

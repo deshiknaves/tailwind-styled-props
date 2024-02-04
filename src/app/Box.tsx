@@ -1,10 +1,14 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { resolveClassName } from '@/lib/resolveClassName'
+import { CSSProperties, ReactNode } from 'react'
 
 export type BoxProps = {
+  aspect?: string
   className?: string
   children?: ReactNode
+  w?: number | string
+  h?: number | string
   px?: number | string
   py?: number | string
   p?: number | string
@@ -19,15 +23,18 @@ export type BoxProps = {
   mr?: number | string
   mt?: number | string
   mb?: number | string
+  style?: CSSProperties
 }
-export function Box({ children, className, ...props }: BoxProps) {
+export function Box({ children, className, style, ...props }: BoxProps) {
   const classNames = Object.entries(props).reduce((acc, [key, value]) => {
     if (value === undefined) return acc
-    if (typeof value === 'number') {
-      return `${acc} ${key}-${value}`
-    }
-    return `${acc} ${key}-[${value}]`
+
+    return `${acc} ${resolveClassName(key, value)}`
   }, className || '')
 
-  return <div className={classNames}>{children}</div>
+  return (
+    <div className={classNames} style={style}>
+      {children}
+    </div>
+  )
 }
